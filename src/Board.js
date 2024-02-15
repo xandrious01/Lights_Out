@@ -24,11 +24,10 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   };
 
   function flipCellsAround(coord) {
-    let boardCopy = initialBoard.map(y => y.map(x => x));
     const coordsToFlip = findCoordsToFlip(coord);
-    boardCopy = flipCoords(coordsToFlip, boardCopy);
-    setBoard(boardCopy);
-
+    flipCoords(coordsToFlip);
+    const newBoard = flipCoords(coordsToFlip);
+    setBoard(()=>newBoard.map(y=>y.map(x=>x)));
   };
   
   function findCoordsToFlip(coord) {
@@ -42,33 +41,32 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
     const coordsToFlip = calculatedCoords.filter(coord => {
       const [y, x] = coord;
-      if (y >= 0 && y <= nrows && x >= 0 && x <= ncols) {
+      if (y >= 0 && y < nrows && x >= 0 && x < ncols) {
         return coord;
       };
     });
     return coordsToFlip;
   };
 
-  function flipCoords(coordsToFlip, boardCopy) {
+  function flipCoords(coordsToFlip) {
+    const newBoard = initialBoard.map(y => y.map(x => x));
+    console.log(newBoard)
     coordsToFlip.forEach(coord => {
       const [y, x] = coord;
-      if (boardCopy[y][x] === true) {
-        boardCopy[y][x] = false;
-      } else if (boardCopy[y][x] === false) {
-        boardCopy[y][x] = true;
+      if (newBoard[y][x] === true) {
+        newBoard[y][x] = false;
+      } else if (newBoard[y][x] === false) {
+        newBoard[y][x] = true;
       };
     });
-    return boardCopy;
+    return newBoard;
   }
-
-
-  // setBoard(boardCopy);
-
+  
   function hasWon() {
 
   }
 
-  const renderedRows = initialBoard.map((y, indY) => {
+  const renderedRows = board.map((y, indY) => {
     return y.map((x, indX) => {
       let coord = indY.toString().concat("-", indX.toString());
       return <Cell key={coord} flipCellsAround={flipCellsAround} isLit={x} coord={coord} />
