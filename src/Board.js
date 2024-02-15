@@ -3,8 +3,8 @@ import Cell from "./Cell";
 import "./Board.css";
 
 function Board({ nrows, ncols, chanceLightStartsOn }) {
-  const initialBoard = createBoard();
-  const [board, setBoard] = useState(initialBoard);
+  // const initialBoard = createBoard();
+  const [board, setBoard] = useState(createBoard);
 
   function createBoard() {
     let initialBoard = [];
@@ -25,9 +25,9 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   function flipCellsAround(coord) {
     const coordsToFlip = findCoordsToFlip(coord);
-    flipCoords(coordsToFlip);
     const newBoard = flipCoords(coordsToFlip);
-    setBoard(()=>newBoard.map(y=>y.map(x=>x)));
+    setBoard(newBoard);
+    (hasWon()===true) ? console.log("win") : console.log("no")
   };
   
   function findCoordsToFlip(coord) {
@@ -49,8 +49,7 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   };
 
   function flipCoords(coordsToFlip) {
-    const newBoard = initialBoard.map(y => y.map(x => x));
-    console.log(newBoard)
+    const newBoard = board.map(y => y.map(x => x));
     coordsToFlip.forEach(coord => {
       const [y, x] = coord;
       if (newBoard[y][x] === true) {
@@ -59,11 +58,16 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
         newBoard[y][x] = true;
       };
     });
-    return newBoard;
+      return newBoard;
   }
   
-  function hasWon() {
-
+  function hasWon(){
+    
+    const checkForWin = board.every(row => row.every(cell => !cell));
+    console.log(checkForWin);
+    console.log(board);
+    return checkForWin;
+  
   }
 
   const renderedRows = board.map((y, indY) => {
